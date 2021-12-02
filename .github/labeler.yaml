@@ -1,2 +1,3 @@
 feature: 'src/**/*.ts'
 ops: '.github/**/*'
+infra: 'infra/**/*'
