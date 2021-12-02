@@ -154,6 +154,8 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform -chdir=./infra init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.NO_SPACE_GCREDS }}
 
       - name: Terraform Validate
         id: validate
@@ -163,6 +165,8 @@ jobs:
         id: plan
         run: terraform -chdir=./infra plan -no-color
         continue-on-error: true
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.NO_SPACE_GCREDS }}
 
       # - name: Deploy To Cloud Run
       #   run: |
