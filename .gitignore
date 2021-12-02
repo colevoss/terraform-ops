@@ -20,3 +20,6 @@ app-*-deployment.yaml
 .dev/*
 
 .eslintcache
+
+.terraform
+*.tfvars

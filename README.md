@@ -61,3 +61,11 @@ archive the test coverage as an artifact of the build.
 - [ ] Explain VSCode Launch Tasks
 - [ ] Create master branch merge Github Action
 - [ ] Explore linting options
+
+## Terraform
+
+### Create GCP Service Account
+
+https://learn.hashicorp.com/tutorials/terraform/google-cloud-platform-build?in=terraform/gcp-get-started
+
+### Manually Enable VPC Network
