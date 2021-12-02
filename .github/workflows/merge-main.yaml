@@ -167,6 +167,8 @@ jobs:
           cd ./infra
           terraform plan
         continue-on-error: true
+        env:
+          TF_LOG: DEBUG
 
       # - name: Deploy To Cloud Run
       #   run: |
