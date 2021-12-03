@@ -176,15 +176,15 @@ jobs:
             -no-color \
             -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
             -var="gcp_region=us-central1" \
-            -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
+            -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ needs.build-image.outputs.image-digest }}"
 
       - name: Terraform Apply
         run: |-
           terraform apply \
-            -auto-approve
+            -auto-approve \
             -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
             -var="gcp_region=us-central1" \
-            -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
+            -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ needs.build-image.outputs.image-digest }}"
 
       # - name: Deploy To Cloud Run
       #   run: |
