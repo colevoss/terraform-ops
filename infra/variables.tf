@@ -10,3 +10,7 @@ variable "gcp_project_id" {
 variable "gcp_region" {
   type = string
 }
+
+variable "my_service_image" {
+  type = string
+}
