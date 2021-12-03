@@ -177,9 +177,14 @@ jobs:
             -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
             -var="gcp_region=us-central1" \
             -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
-        continue-on-error: true
-        # env:
-        #   TF_LOG: DEBUG
+
+      - name: Terraform Apply
+        run: |-
+          terraform apply \
+            -auto-approve
+            -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
+            -var="gcp_region=us-central1" \
+            -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
 
       # - name: Deploy To Cloud Run
       #   run: |
