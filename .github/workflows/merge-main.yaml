@@ -165,7 +165,9 @@ jobs:
         id: plan
         run: |-
           cd ./infra
-          terraform plan
+          terraform plan \
+            -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
+            -var="gcp_region=us-central1"
         continue-on-error: true
         env:
           TF_LOG: DEBUG
