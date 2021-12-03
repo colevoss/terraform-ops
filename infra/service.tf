@@ -31,7 +31,7 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "my_service_noauth" {
+resource "google_cloud_run_service_iam_policy" "noauth" {
   location = google_cloud_run_service.my_service.location
   project  = google_cloud_run_service.my_service.project
   service  = google_cloud_run_service.my_service.name
