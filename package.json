@@ -39,5 +39,9 @@
   "lint-staged": {
     "*.{ts,js}": "eslint --cache --fix",
     "*.{ts,js,md}": "prettier --write"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "redis": "^4.0.0"
   }
 }
