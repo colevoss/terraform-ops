@@ -91,6 +91,8 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: [integration-test, unit-test, linting, build]
+    outputs:
+      image-digest: ${{ steps.docker_build.outputs.digest }}
     steps:
       - uses: actions/checkout@v2
       # For now this is required so the push command outputs the correct digest
@@ -129,17 +131,23 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - id: auth
+  deploy:
+    name: Deploy Service
+    runs-on: ubuntu-latest
+    needs: build-image
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Google Cloud Auth
         uses: google-github-actions/auth@v0.4.0
         with:
           credentials_json: ${{ secrets.GCP_AUTH }}
 
       - name: Set up Google Cloud Tools
         uses: google-github-actions/setup-gcloud@master
-        # with:
-        #   project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
-        #   service_account_key: ${{ secrets.GCP_AUTH }}
-        #   export_default_credentials: true
 
       - name: gcloud Info
         run: gcloud info
@@ -153,19 +161,21 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform -chdir=./infra init
+        # run: terraform -chdir=./infra init
+        run: terraform init
 
       - name: Terraform Validate
         id: validate
-        run: terraform -chdir=./infra validate -no-color
+        # run: terraform -chdir=./infra validate -no-color
+        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
         run: |-
-          cd ./infra
           terraform plan \
+            -no-color \
             -var="gcp_project_id=${{ secrets.GOOGLE_PROJECT_ID }}" \
-            -var="gcp_region=us-central1"
+            -var="gcp_region=us-central1" \
             -var="my_service_image=${{ secrets.DOCKER_REPO }}/${{ secrets.IMAGE_NAME }}@${{ steps.docker_build.outputs.digest }}"
         continue-on-error: true
         # env:
