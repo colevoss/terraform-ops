@@ -154,8 +154,6 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform -chdir=./infra init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.NO_SPACE_GCREDS }}
 
       - name: Terraform Validate
         id: validate
