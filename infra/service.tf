@@ -4,12 +4,23 @@ resource "google_cloud_run_service" "my_service" {
 
   template {
     spec {
+      container_concurrency = 80
       containers {
         image = var.my_service_image
+
+        resources {
+          limits = {
+            "cpu"    = "1000m"
+            "memory" = "512Mi"
+          }
+        }
       }
     }
 
     metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale" = "100"
+      }
       labels = {
         service = "my-service"
       }
