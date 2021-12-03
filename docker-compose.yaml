@@ -12,3 +12,10 @@ services:
     ports:
       - '8080:8080'
       - '9229:9229'
+    env_file:
+      - '.env'
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - '6379:6379'

@@ -7,6 +7,15 @@ resource "google_cloud_run_service" "my_service" {
       container_concurrency = 80
       containers {
         image = var.my_service_image
+        env {
+          name  = "REDISHOST"
+          value = google_redis_instance.cache.host
+        }
+
+        env {
+          name  = "REDISPORT"
+          value = google_redis_instance.cache.port
+        }
 
         resources {
           limits = {
@@ -19,7 +28,8 @@ resource "google_cloud_run_service" "my_service" {
 
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale" = "100"
+        "autoscaling.knative.dev/maxScale"        = "100"
+        "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.vpcconnector.name
       }
       labels = {
         service = "my-service"
