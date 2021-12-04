@@ -44,12 +44,14 @@ ENV CI=true
 
 RUN npm ci --production
 
-COPY --from=build /app/build ./build
-COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/build build/
+COPY --from=build /app/prisma prisma/
 COPY --from=build /app/docker-entrypoint.sh ./
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
+
+RUN npm run prisma:generate
 
 # Use non-priv `node` user
 # @see https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#non-root-user
