@@ -21,6 +21,7 @@ RUN npm ci --production=false
 
 # Build Typescript App
 COPY . .
+RUN npm run prisma:generate
 RUN npm run build
 
 # =====================================
@@ -29,6 +30,11 @@ RUN npm run build
 FROM node:16-slim
 
 WORKDIR /app
+
+# Needed for prisma
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y openssl \
+  && rm -rf /var/lib/apt/lists/*
 
 # Intstall prod dependencies
 COPY --from=build /app/package*.json ./
@@ -39,6 +45,8 @@ ENV CI=true
 RUN npm ci --production
 
 COPY --from=build /app/build ./build
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/docker-entrypoint.sh ./
 
 ARG NODE_ENV
 ENV NODE_ENV=${NODE_ENV}
@@ -49,4 +57,5 @@ USER node
 
 EXPOSE 8080
 
-CMD ["node", "./build/index.js"]
+ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
+CMD [ "node", "./build/index.js" ]

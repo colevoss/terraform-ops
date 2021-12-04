@@ -17,6 +17,18 @@ resource "google_cloud_run_service" "my_service" {
           value = google_redis_instance.cache.port
         }
 
+        env {
+          name = "DATABASE_URL"
+          value = format(
+            "postgres://%s:%s@%s/%s?host=/cloudsql/%s",
+            google_sql_user.db-user.name,                                 # username
+            google_sql_user.db-user.password,                             # password
+            google_sql_database_instance.pgql-database.public_ip_address, # Public IP Address
+            google_sql_database_instance.pgql-database.name,              # Database name
+            google_sql_database_instance.pgql-database.connection_name    # Connection name
+          )
+        }
+
         resources {
           limits = {
             "cpu"    = "1000m"
@@ -30,6 +42,7 @@ resource "google_cloud_run_service" "my_service" {
       annotations = {
         "autoscaling.knative.dev/maxScale"        = "100"
         "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.vpcconnector.name
+        "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.pgql-database.connection_name
       }
       labels = {
         service = "my-service"
