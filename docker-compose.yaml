@@ -6,7 +6,7 @@ services:
     build:
       context: .
       target: build
-    stop_signal: SIGINT
+    # stop_signal: SIGINT
     entrypoint: ./docker-entrypoint.sh
     command: npm run dev
     volumes:
