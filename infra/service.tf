@@ -41,6 +41,7 @@ resource "google_cloud_run_service" "my_service" {
     metadata {
       annotations = {
         "autoscaling.knative.dev/maxScale"        = "100"
+        "autoscaling.knative.dev/minScale"        = var.service_min_instances
         "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.vpcconnector.name
         "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.pgql-database.connection_name
       }

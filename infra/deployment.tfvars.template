@@ -1,0 +1,12 @@
+# This file exists as a template for deploy-time environment variables needed by
+# terraform. If a variable is only known at build/deploy time or is sensitive and
+# can only be used when set in the environment, use the "${ENV_VAR_NAME}" format.
+
+# These template varaibles will be replaced when make prepare-deployment is ran
+# by the values found in the environment.
+
+# @note - Do not use backticks in this file
+
+gcp_project_id   = "${GOOGLE_PROJECT_ID}"
+gcp_region       = "${GCP_REGION}"
+my_service_image = "${MY_SERVICE_IMAGE}"

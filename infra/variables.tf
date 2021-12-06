@@ -9,3 +9,8 @@ variable "gcp_region" {
 variable "my_service_image" {
   type = string
 }
+
+variable "service_min_instances" {
+  type    = number
+  default = 0
+}
