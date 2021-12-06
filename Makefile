@@ -5,7 +5,7 @@ prepare-deployment:
 
 terraform-init:
 	cd ./infra && \
-	terraform-init
+	terraform init
 
 terraform-validate:
 	cd ./infra && \
