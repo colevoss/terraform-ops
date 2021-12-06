@@ -16,6 +16,9 @@ server.get('/', async (req: express.Request, res: express.Response) => {
     const userCount = await app.cache.get('user-count');
     app.logger.info({ userCount }, 'User count fetched');
 
+    const visitCount = await app.cache.get('user-visits');
+    app.logger.info({ visitCount }, 'Visit count fetched');
+
     const users = await app.db.user.findMany();
     app.logger.info({ users }, 'Users fetched');
 
@@ -25,7 +28,11 @@ server.get('/', async (req: express.Request, res: express.Response) => {
 
     app.logger.info({ publishRes }, 'Data Published');
 
-    res.json({ users, userCount: Number(userCount || 0) });
+    res.json({
+      users,
+      userCount: Number(userCount || 0),
+      visitCount: Number(visitCount || 0),
+    });
   } catch (err) {
     app.logger.error(err, 'App Error');
     res.status(500).send(err.message);
