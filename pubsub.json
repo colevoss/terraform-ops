@@ -1,0 +1,9 @@
+{
+  "subscriptions": [
+    {
+      "topic": "visited",
+      "name": "test-subscription",
+      "endpoint": "/visit-consumer"
+    }
+  ]
+}
