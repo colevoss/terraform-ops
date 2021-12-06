@@ -22,4 +22,5 @@ app-*-deployment.yaml
 .eslintcache
 
 .terraform
-*.tfvars
+terraform.tfvars
+*auto.tfvars
