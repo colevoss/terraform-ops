@@ -1,1 +1,1 @@
-service_min_instances = 0
+service_min_instances = 1
