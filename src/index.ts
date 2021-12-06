@@ -19,6 +19,12 @@ server.get('/', async (req: express.Request, res: express.Response) => {
     const users = await app.db.user.findMany();
     app.logger.info({ users }, 'Users fetched');
 
+    const publishRes = await app.pubsub
+      .topic('visited')
+      .publishMessage({ json: { hello: 'world' } });
+
+    app.logger.info({ publishRes }, 'Data Published');
+
     res.json({ users, userCount: Number(userCount || 0) });
   } catch (err) {
     app.logger.error(err, 'App Error');
@@ -52,6 +58,39 @@ server.post('/users', async (req: express.Request, res: express.Response) => {
 
   res.status(201).send({ user, userCount });
 });
+
+server.post(
+  '/visit-consumer',
+  async (req: express.Request, res: express.Response) => {
+    if (!req.body) {
+      const msg = 'no Pub/Sub message received';
+      app.logger.error(msg);
+      res.status(400).send(`Bad Request: ${msg}`);
+      return;
+    }
+
+    const pubsubMessage = req.body.message;
+
+    if (!pubsubMessage) {
+      const msg = 'invalid Pub/Sub message format';
+      app.logger.error(msg);
+      res.status(400).send(`Bad Request: ${msg}`);
+      return;
+    }
+
+    const dataString = Buffer.from(pubsubMessage.data, 'base64').toString(
+      'utf-8',
+    );
+    const data = JSON.parse(dataString);
+
+    app.logger.debug({ pubsubData: data }, 'Pub Sub message received');
+
+    const visitCount = await app.cache.incr('user-visits');
+    app.logger.info({ visitCount }, 'Visit count increment');
+
+    res.status(200).send();
+  },
+);
 
 server.listen(PORT, () => {
   app.logger.info({ port: PORT }, 'App listening on port');
