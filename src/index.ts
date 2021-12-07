@@ -32,6 +32,7 @@ server.get('/', async (req: express.Request, res: express.Response) => {
       users,
       userCount: Number(userCount || 0),
       visitCount: Number(visitCount || 0),
+      hello: 'AMANDA',
     });
   } catch (err) {
     app.logger.error(err, 'App Error');

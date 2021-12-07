@@ -24,4 +24,8 @@ resource "google_pubsub_subscription" "subscriptions" {
   push_config {
     push_endpoint = "${google_cloud_run_service.my_service.status[0].url}${each.value.endpoint}"
   }
+
+  labels = {
+    service = "my-service"
+  }
 }
