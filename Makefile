@@ -8,7 +8,8 @@ prepare-deployment:
 
 terraform-init:
 	cd ./infra && \
-	terraform init
+	terraform init \
+		-backend-config=./config/${ENV}/gcs.tfbackend
 
 ENV?=staging
 

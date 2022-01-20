@@ -1,9 +1,9 @@
 locals {
   subscriptions_data = jsondecode(file("../pubsub.json"))
-  topics = toset([for sub in local.subscriptions_data.subscriptions : sub.topic ])
+  topics             = toset([for sub in local.subscriptions_data.subscriptions : sub.topic])
   subscriptions = {
     for sub in local.subscriptions_data.subscriptions : sub.name => {
-      topic = sub.topic
+      topic    = sub.topic
       endpoint = sub.endpoint
     }
   }
@@ -13,12 +13,16 @@ resource "google_pubsub_topic" "topics" {
   for_each = local.topics
 
   name = each.value
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_pubsub_subscription" "subscriptions" {
   for_each = local.subscriptions
 
-  name = each.key
+  name  = each.key
   topic = each.value.topic
 
   push_config {

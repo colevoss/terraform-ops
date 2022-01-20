@@ -7,9 +7,9 @@ terraform {
   }
 
   # Used for backing up terraform state in a Google Cloud Storage bucket
-  # @see https://www.terraform.io/docs/language/settings/backends/gcs.html
+  # @see https://www.terraform.io/docs/language/settings/backends/gcs
   backend "gcs" {
-    bucket = "playground-infra"
+    # bucket = "playground-infra"
     prefix = "terraform/state"
   }
 }
