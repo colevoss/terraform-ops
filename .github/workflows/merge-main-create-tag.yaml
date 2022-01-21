@@ -64,7 +64,7 @@ jobs:
 
             console.log(deployment)
 
-            return deployment
+            return deployment.data
 
   finish-deployment:
     runs-on: ubuntu-latest
