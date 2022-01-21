@@ -19,7 +19,7 @@ jobs:
           RELEASE_NAME=$(git show -s --date=format:'%Y%m%d%H%M%S' --format=%cd-%h ${{ github.sha }})
 
           git tag \
-            -a $RELEASE_NAME
+            -a $RELEASE_NAME \
             -m '$RELEASE_NAME Release'
 
           git push origin $RELEASE_NAME
