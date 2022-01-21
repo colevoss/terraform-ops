@@ -19,4 +19,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: context.ref,
+              auto_merge: false,
+              required_contexts: []
             })
