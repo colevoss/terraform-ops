@@ -42,6 +42,7 @@ jobs:
       deployment-id: ${{ steps.create-deployment.outputs.result.id }}
 
     steps:
+      - uses: actions/checkout@v2
       -
         id: create-deployment
         uses: actions/github-script@v5
