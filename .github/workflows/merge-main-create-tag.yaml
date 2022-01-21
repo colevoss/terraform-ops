@@ -6,9 +6,41 @@ on:
       - main
 
 jobs:
+  create-deployment:
+    runs-on: ubuntu-latest
+    needs: tag-release
+    outputs:
+      deployment-id: ${{ steps.create-deployment.outputs.result }}
+
+    steps:
+      - uses: actions/checkout@v2
+      -
+        id: create-deployment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              // ref: '${{ needs.tag-release.outputs.release_tag_ref }}',
+              ref: context.ref,
+              auto_merge: false,
+              required_contexts: [],
+              environment: 'staging',
+              payload: {
+                test: 'test payload data'
+              },
+              description: 'Test deployment description'
+            })
+
+            console.log(deployment)
+
+            return deployment.data.id
+
   tag-release:
     name: Tag Release
     runs-on: ubuntu-latest
+    needs: create-deployment
 
     outputs:
       release_tag: ${{ steps.tag-release.outputs.release_tag }}
@@ -35,40 +67,60 @@ jobs:
           echo "::set-output name=release_tag::${RELEASE_NAME}"
           echo "::set-output name=release_tag_ref::refs/tags/${RELEASE_NAME}"
 
-  create-deployment:
+  # create-deployment:
+  #   runs-on: ubuntu-latest
+  #   needs: tag-release
+  #   outputs:
+  #     deployment-id: ${{ steps.create-deployment.outputs.result }}
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     -
+  #       id: create-deployment
+  #       uses: actions/github-script@v5
+  #       with:
+  #         script: |
+  #           console.log('${{ needs.tag-release.outputs.release_tag_ref }}')
+  #           const deployment = await github.rest.repos.createDeployment({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             ref: '${{ needs.tag-release.outputs.release_tag_ref }}',
+  #             auto_merge: false,
+  #             required_contexts: [],
+  #             environment: 'staging',
+  #             payload: {
+  #               test: 'test payload data'
+  #             },
+  #             description: 'Test deployment description'
+  #           })
+
+  #           console.log(deployment)
+
+  #           return deployment.data.id
+
+  update-deployment:
     runs-on: ubuntu-latest
     needs: tag-release
-    outputs:
-      deployment-id: ${{ steps.create-deployment.outputs.result }}
 
     steps:
       - uses: actions/checkout@v2
       -
-        id: create-deployment
+        id: finish-deployment
         uses: actions/github-script@v5
         with:
           script: |
-            console.log('${{ needs.tag-release.outputs.release_tag_ref }}')
-            const deployment = await github.rest.repos.createDeployment({
+            const deploymentStatus = await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: '${{ needs.tag-release.outputs.release_tag_ref }}',
-              auto_merge: false,
-              required_contexts: [],
-              environment: 'staging',
-              payload: {
-                test: 'test payload data'
-              },
-              description: 'Test deployment description'
+              deployment_id: ${{ needs.create-deployment.outputs.deployment-id }},
+              state: 'in_progress',
+              environment_url: 'https://my-service.cv-dev.xyz',
+              log_url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
             })
-
-            console.log(deployment)
-
-            return deployment.data.id
 
   finish-deployment:
     runs-on: ubuntu-latest
-    needs: create-deployment
+    needs: update-deployment
 
     steps:
       - uses: actions/checkout@v2
