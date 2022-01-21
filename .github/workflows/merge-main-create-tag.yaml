@@ -1,0 +1,28 @@
+name: Create Staging Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag-release:
+    name: Tag Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Tag Release
+        run: |
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
+
+          RELEASE_NAME=$(git show -s --date=format:'%Y%m%d%H%M%S' --format=%cd-%h ${{ github.sha }})
+
+          git tag \
+            -a $RELEASE_NAME
+            -m '$RELEASE_NAME Release'
+
+          git push origin $RELEASE_NAME
+
+          
+# VARIABLE=$(git show -s --date=format:'%Y%m%d%H%M%S' --format=%cd-%h <SHA>)

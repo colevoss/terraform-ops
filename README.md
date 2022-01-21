@@ -69,3 +69,34 @@ archive the test coverage as an artifact of the build.
 https://learn.hashicorp.com/tutorials/terraform/google-cloud-platform-build?in=terraform/gcp-get-started
 
 ### Manually Enable VPC Network
+
+## CI/CD STEPS
+
+### Pull Reqeuest
+
+Runs things
+
+### Merge PR To Main
+
+Runs tests and such
+Create release tag
+
+```sh
+VARIABLE=$(git show -s --date=format:'%Y%m%d%H%M%S' --format=%cd-%h <SHA>)
+```
+
+push tag
+
+### [On Tag Push Action](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-including-branches-and-tags)
+
+1. Create Deployment for tag ref
+2. Do deployment things
+3. Update deployment status
+
+Want to do:
+
+- Use tag compare links in deployment some how
+
+```
+https://github.com/colevoss/terraform-ops/compare/test-tag-a...test-tag-two
+```
