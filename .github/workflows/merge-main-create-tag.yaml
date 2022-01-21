@@ -100,7 +100,7 @@ jobs:
 
   update-deployment:
     runs-on: ubuntu-latest
-    needs: tag-release
+    needs: [tag-release, create-deployment]
 
     steps:
       - uses: actions/checkout@v2
@@ -120,7 +120,7 @@ jobs:
 
   finish-deployment:
     runs-on: ubuntu-latest
-    needs: update-deployment
+    needs: [update-deployment, create-deployment]
 
     steps:
       - uses: actions/checkout@v2
