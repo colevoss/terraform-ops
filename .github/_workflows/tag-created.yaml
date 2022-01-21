@@ -9,7 +9,7 @@ jobs:
   create-deployment:
     runs-on: ubuntu-latest
     outputs:
-      deployment-id: ${{ steps.create-deployment.outputs.result.id}}
+      deployment-id: ${{ steps.create-deployment.outputs.result.id }}
 
     steps:
       -
