@@ -22,7 +22,6 @@ jobs:
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              // ref: '${{ needs.tag-release.outputs.release_tag_ref }}',
               ref: context.ref,
               auto_merge: false,
               required_contexts: [],
@@ -32,8 +31,6 @@ jobs:
               },
               description: 'Test deployment description'
             })
-
-            console.log(deployment)
 
             return deployment.data.id
 
@@ -67,37 +64,6 @@ jobs:
           echo "::set-output name=release_tag::${RELEASE_NAME}"
           echo "::set-output name=release_tag_ref::refs/tags/${RELEASE_NAME}"
 
-  # create-deployment:
-  #   runs-on: ubuntu-latest
-  #   needs: tag-release
-  #   outputs:
-  #     deployment-id: ${{ steps.create-deployment.outputs.result }}
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     -
-  #       id: create-deployment
-  #       uses: actions/github-script@v5
-  #       with:
-  #         script: |
-  #           console.log('${{ needs.tag-release.outputs.release_tag_ref }}')
-  #           const deployment = await github.rest.repos.createDeployment({
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             ref: '${{ needs.tag-release.outputs.release_tag_ref }}',
-  #             auto_merge: false,
-  #             required_contexts: [],
-  #             environment: 'staging',
-  #             payload: {
-  #               test: 'test payload data'
-  #             },
-  #             description: 'Test deployment description'
-  #           })
-
-  #           console.log(deployment)
-
-  #           return deployment.data.id
-
   update-deployment:
     runs-on: ubuntu-latest
     needs: [tag-release, create-deployment]
@@ -129,7 +95,6 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            console.log(context)
             const deploymentStatus = await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
