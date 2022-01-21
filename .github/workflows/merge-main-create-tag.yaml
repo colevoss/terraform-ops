@@ -82,5 +82,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               deployment_id: ${{ needs.create-deployment.outputs.deployment-id }},
-              state: 'success'
+              state: 'success',
+              environment_url: 'https://my-service.cv-dev.xyz'
             })
