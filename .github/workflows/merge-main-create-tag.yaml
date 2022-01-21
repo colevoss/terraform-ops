@@ -50,7 +50,7 @@ jobs:
             const deployment = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: ${{ needs.tag-release.outputs.release_tag_ref }}
+              ref: ${{ needs.tag-release.outputs.release_tag_ref }},
               auto_merge: false,
               required_contexts: [],
               environment: 'staging',
