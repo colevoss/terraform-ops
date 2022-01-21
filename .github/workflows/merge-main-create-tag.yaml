@@ -77,7 +77,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            console.log(${{ needs.create-deployment.outputs.deployment-id }})
+            console.log(context)
             const deploymentStatus = await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
