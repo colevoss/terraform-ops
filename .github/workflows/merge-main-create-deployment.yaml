@@ -21,5 +21,9 @@ jobs:
               ref: context.ref,
               auto_merge: false,
               required_contexts: [],
-              environment: 'staging'
+              environment: 'staging',
+              payload: {
+                test: 'test payload data'
+              },
+              description: 'Test deployment description'
             })
