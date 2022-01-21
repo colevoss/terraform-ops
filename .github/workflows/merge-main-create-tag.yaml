@@ -33,7 +33,7 @@ jobs:
           git push origin $RELEASE_NAME
 
           echo "::set-output name=release_tag::${RELEASE_NAME}"
-          echo "::set-output name=release_tag_ref::refs/tag/${RELEASE_NAME}"
+          echo "::set-output name=release_tag_ref::refs/tags/${RELEASE_NAME}"
 
   create-deployment:
     runs-on: ubuntu-latest
