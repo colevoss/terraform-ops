@@ -9,9 +9,17 @@ jobs:
   tag-release:
     name: Tag Release
     runs-on: ubuntu-latest
+
+    outputs:
+      release_tag: ${{ steps.tag-release.outputs.release_tag }}
+      release_tag_ref: ${{ steps.tag-release.outputs.release_tag_ref }}
+
     steps:
       - uses: actions/checkout@v2
-      - name: Tag Release
+
+      - 
+        name: Tag Release
+        id: tag-release
         run: |
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "${{ github.actor }}"
@@ -23,3 +31,50 @@ jobs:
             -m "$(git show --pretty=medium -s)"
 
           git push origin $RELEASE_NAME
+
+          echo "::set-output name=release_tag::${RELEASE_NAME}"
+          echo "::set-output name=release_tag_ref::refs/tag/${RELEASE_NAME}"
+
+  create-deployment:
+    runs-on: ubuntu-latest
+    needs: tag-release
+    outputs:
+      deployment-id: ${{ steps.create-deployment.outputs.result.id }}
+
+    steps:
+      -
+        id: create-deployment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: ${{ needs.tag-release.outputs.release_tag_ref }}
+              auto_merge: false,
+              required_contexts: [],
+              environment: 'staging',
+              payload: {
+                test: 'test payload data'
+              },
+              description: 'Test deployment description'
+            })
+
+            return deployment
+
+  finish-deployment:
+    runs-on: ubuntu-latest
+    needs: create-deployment
+
+    steps:
+      -
+        id: finish-deployment
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const deploymentStatus = await github.res.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ needs.create-deployment.outputs.deployment-id }},
+              state: 'success',
+            })
