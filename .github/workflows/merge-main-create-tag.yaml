@@ -62,6 +62,8 @@ jobs:
               description: 'Test deployment description'
             })
 
+            console.log(deployment)
+
             return deployment
 
   finish-deployment:
@@ -69,6 +71,7 @@ jobs:
     needs: create-deployment
 
     steps:
+      - uses: actions/checkout@v2
       -
         id: finish-deployment
         uses: actions/github-script@v5
