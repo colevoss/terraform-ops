@@ -77,6 +77,6 @@ jobs:
             const deploymentStatus = await github.res.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: ${{ needs.create-deployment.outputs.deployment-id }},
-              state: 'success',
+              deployment_id: '${{ needs.create-deployment.outputs.deployment-id }}',
+              state: 'success'
             })
