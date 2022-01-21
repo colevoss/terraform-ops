@@ -12,13 +12,11 @@ jobs:
     steps:
       -
         id: create-deployment
-        uses: octokit/request-action@v2.x
+        uses: actions/github-script@v5
         with:
-          route: POST /repos/{repo}/deployments
-          # owner: octokit
-          repo: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          environment: staging
-          auto_merge: false
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.ref,
+            })
