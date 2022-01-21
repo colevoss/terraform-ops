@@ -1,0 +1,23 @@
+name: Create Staging Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        id: create-deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{repo}/deployments
+          # owner: octokit
+          repo: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          environment: staging
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
