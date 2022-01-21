@@ -1,4 +1,4 @@
-name: Create Staging Deployment
+name: Tag Release
 
 on:
   push:
@@ -23,6 +23,3 @@ jobs:
             -m "$(git show --pretty=medium -s)"
 
           git push origin $RELEASE_NAME
-
-          
-# VARIABLE=$(git show -s --date=format:'%Y%m%d%H%M%S' --format=%cd-%h <SHA>)
