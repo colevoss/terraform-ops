@@ -20,7 +20,7 @@ jobs:
 
           git tag \
             -a $RELEASE_NAME \
-            -m "$(git show --pretty=short -s)"
+            -m "$(git show --pretty=medium -s)"
 
           git push origin $RELEASE_NAME
 
