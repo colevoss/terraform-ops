@@ -83,5 +83,6 @@ jobs:
               repo: context.repo.repo,
               deployment_id: ${{ needs.create-deployment.outputs.deployment-id }},
               state: 'success',
-              environment_url: 'https://my-service.cv-dev.xyz'
+              environment_url: 'https://my-service.cv-dev.xyz',
+              log_url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
             })
