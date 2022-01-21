@@ -30,6 +30,8 @@ jobs:
               description: 'Test deployment description'
             })
 
+            return deployment
+
   finish-deployment:
     runs-on: ubuntu-latest
     needs: create-deployment
