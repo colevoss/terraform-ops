@@ -1,13 +1,13 @@
 resource "google_redis_instance" "cache" {
-  name           = "my-redis-cache"
-  tier           = "BASIC"
-  memory_size_gb = 1
+  name           = var.cache_name
+  tier           = var.cache_tier
+  memory_size_gb = var.cache_memory_size_gb
 
   authorized_network = data.google_compute_network.default.id
 
-  display_name = "My Redis Cache"
+  display_name = var.cache_display_name
 
   labels = {
-    service = "my-service"
+    service = var.service_name
   }
 }

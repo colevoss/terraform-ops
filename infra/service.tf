@@ -1,5 +1,6 @@
-resource "google_cloud_run_service" "my_service" {
-  name     = "my-service"
+# @see https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_service
+resource "google_cloud_run_service" "service" {
+  name     = var.service_name
   location = var.gcp_region
 
   template {
@@ -40,13 +41,13 @@ resource "google_cloud_run_service" "my_service" {
 
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale"        = "100"
+        "autoscaling.knative.dev/maxScale"        = var.service_max_instances
         "autoscaling.knative.dev/minScale"        = var.service_min_instances
         "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.vpcconnector.name
         "run.googleapis.com/cloudsql-instances"   = google_sql_database_instance.pgql-database.connection_name
       }
       labels = {
-        service = "my-service"
+        service = var.service_name
       }
     }
   }
@@ -57,6 +58,7 @@ resource "google_cloud_run_service" "my_service" {
   }
 }
 
+# @see https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_service#example-usage---cloud-run-service-noauth
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
@@ -67,9 +69,9 @@ data "google_iam_policy" "noauth" {
 }
 
 resource "google_cloud_run_service_iam_policy" "noauth" {
-  location = google_cloud_run_service.my_service.location
-  project  = google_cloud_run_service.my_service.project
-  service  = google_cloud_run_service.my_service.name
+  location = google_cloud_run_service.service.location
+  project  = google_cloud_run_service.service.project
+  service  = google_cloud_run_service.service.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }
